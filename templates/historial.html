@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Historial · SmartRoom</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="{{ url_for('static', filename='icons/icon-192.png') }}" />
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192.png') }}" />
+  <meta name="theme-color" content="#111111" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+</head>
+<body data-page="historial">
+
+  <nav class="navbar">
+    <div class="navbar-logo">Smart<span>Room</span></div>
+    <div class="navbar-links">
+      <a href="/dashboard" class="navbar-link">Dashboard</a>
+      <a href="/historial" class="navbar-link active">Historial</a>
+    </div>
+    <div class="navbar-user">
+      <span>{{ usuario_nombre }}</span>
+      <button class="logout-btn" id="logoutBtn">Salir</button>
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Historial de ocupación</div>
+        <div class="page-subtitle">Selecciona una sala para ver su historial de eventos</div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <span class="section-title">Selecciona una sala</span>
+    </div>
+
+    <div class="list-panel">
+      <div class="list-header-row">
+        <span>Sala</span><span>Estado</span><span>Ocupación</span><span>Personas</span><span>Aforo</span>
+      </div>
+      <div id="roomList">
+        <div class="empty-state">Cargando salas...</div>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="/dashboard" class="bottom-nav-item">
+      <span class="bottom-nav-icon">⬚</span>
+      <span>Inicio</span>
+    </a>
+    <a href="/historial" class="bottom-nav-item active">
+      <span class="bottom-nav-icon">▤</span>
+      <span>Historial</span>
+    </a>
+    <a href="#" class="bottom-nav-item" id="bottomLogout">
+      <span class="bottom-nav-icon">⏻</span>
+      <span>Salir</span>
+    </a>
+  </nav>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/pwa.js') }}"></script>
+  <script>
+    document.getElementById("bottomLogout").addEventListener("click", (e) => {
+      e.preventDefault();
+      handleLogout();
+    });
+  </script>
+  <script>
+    // Reutiliza la carga del dashboard sólo para poblar la lista
+    document.addEventListener("DOMContentLoaded", async () => {
+      const listContainer = document.getElementById("roomList");
+      try {
+        const salas = await fetchSalas();
+        listContainer.innerHTML = "";
+        if (salas.length === 0) {
+          listContainer.innerHTML = `<div class="empty-state">No hay salas registradas.</div>`;
+        } else {
+          salas.forEach((sala) => listContainer.appendChild(renderListRow(sala)));
+        }
+      } catch (err) {
+        listContainer.innerHTML = `<div class="empty-state">No se pudo conectar con el servidor.</div>`;
+      }
+    });
+  </script>
+</body>
+</html>

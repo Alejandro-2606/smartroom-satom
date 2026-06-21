@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Detalle de sala · SmartRoom</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="{{ url_for('static', filename='icons/icon-192.png') }}" />
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192.png') }}" />
+  <meta name="theme-color" content="#111111" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+</head>
+<body data-page="detalle" data-sala-id="{{ sala_id }}">
+
+  <nav class="navbar">
+    <div class="navbar-logo">Smart<span>Room</span></div>
+    <div class="navbar-links">
+      <a href="/dashboard" class="navbar-link">Dashboard</a>
+      <a href="/historial" class="navbar-link">Historial</a>
+    </div>
+    <div class="navbar-user">
+      <span>{{ usuario_nombre }}</span>
+      <button class="logout-btn" id="logoutBtn">Salir</button>
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="breadcrumb">
+      <a href="/dashboard">Dashboard</a>
+      <span>›</span>
+      <span class="current" id="salaNombreBreadcrumb">Sala</span>
+    </div>
+
+    <div class="page-header">
+      <div>
+        <div class="page-title" id="salaNombre">Cargando...</div>
+        <div class="page-subtitle">
+          <span id="salaUbicacion"></span> · Actualizado <span id="salaUpdated">—</span>
+        </div>
+      </div>
+      <span class="status-pill" id="salaStatusPill">—</span>
+    </div>
+
+    <div class="detail-grid">
+      <div class="detail-card">
+        <div class="detail-card-title">Ocupación actual</div>
+        <div class="big-number" id="ocupacionNumero">—</div>
+        <div class="big-label" id="ocupacionLabel">personas</div>
+        <div class="detail-progress">
+          <div class="progress-bg">
+            <div class="progress-fill" id="ocupacionBar" style="width: 0%"></div>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; font-size:12px; color:var(--text-secondary);">
+          <span id="ocupacionPct">—</span>
+        </div>
+      </div>
+
+      <div class="detail-card">
+        <div class="detail-card-title">Sensores activos</div>
+        <div id="sensorList">
+          <div class="empty-state">Cargando sensores...</div>
+        </div>
+      </div>
+
+      <div class="detail-card">
+        <div class="detail-card-title">Ocupación por hora (hoy)</div>
+        <div class="bar-chart" id="barChart"></div>
+      </div>
+
+      <div class="detail-card">
+        <div class="detail-card-title">Últimos eventos</div>
+        <div id="eventList">
+          <div class="empty-state">Cargando eventos...</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="/dashboard" class="bottom-nav-item">
+      <span class="bottom-nav-icon">⬚</span>
+      <span>Inicio</span>
+    </a>
+    <a href="/historial" class="bottom-nav-item">
+      <span class="bottom-nav-icon">▤</span>
+      <span>Historial</span>
+    </a>
+    <a href="#" class="bottom-nav-item" id="bottomLogout">
+      <span class="bottom-nav-icon">⏻</span>
+      <span>Salir</span>
+    </a>
+  </nav>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/pwa.js') }}"></script>
+  <script>
+    document.getElementById("bottomLogout").addEventListener("click", (e) => {
+      e.preventDefault();
+      handleLogout();
+    });
+  </script>
+</body>
+</html>
