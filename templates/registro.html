@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Crear cuenta · SmartRoom</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#111111" />
+</head>
+<body data-page="registro">
+
+  <div class="login-wrap">
+    <div class="login-box">
+      <div class="login-logo">Smart<span>Room</span></div>
+      <div class="login-sub">Crear cuenta nueva</div>
+
+      <div class="login-error" id="registroError"></div>
+      <div id="registroExito" style="display:none; background:var(--green-bg); color:var(--green-text); font-size:12px; padding:10px 14px; border-radius:var(--border-radius-sm); margin-bottom:16px;">
+        ¡Cuenta creada! <a href="/login" style="color:var(--green-text); font-weight:600;">Inicia sesión aquí</a>
+      </div>
+
+      <form id="registroForm">
+        <div class="form-group">
+          <label class="form-label">Nombre completo</label>
+          <input type="text" id="registroNombre" class="form-input" placeholder="Tu nombre" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Correo institucional</label>
+          <input type="email" id="registroEmail" class="form-input" placeholder="nombre@mail.udp.cl" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contraseña</label>
+          <input type="password" id="registroPassword" class="form-input" placeholder="Mínimo 6 caracteres" required minlength="6" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirmar contraseña</label>
+          <input type="password" id="registroConfirm" class="form-input" placeholder="Repite tu contraseña" required />
+        </div>
+        <button type="submit" class="login-btn" id="registroBtn">Crear cuenta</button>
+      </form>
+
+      <div style="text-align:center; margin-top:16px; font-size:13px; color:var(--text-secondary);">
+        ¿Ya tienes cuenta? <a href="/login" style="color:var(--text-primary); font-weight:500;">Inicia sesión</a>
+      </div>
+      <div style="text-align:center; margin-top:8px; font-size:13px; color:var(--text-secondary);">
+        <a href="/dashboard" style="color:var(--text-tertiary);">Ver dashboard sin cuenta →</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("registroForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const nombre   = document.getElementById("registroNombre").value.trim();
+      const email    = document.getElementById("registroEmail").value.trim().toLowerCase();
+      const password = document.getElementById("registroPassword").value;
+      const confirm  = document.getElementById("registroConfirm").value;
+      const errorBox = document.getElementById("registroError");
+      const exitoBox = document.getElementById("registroExito");
+      const btn      = document.getElementById("registroBtn");
+
+      errorBox.classList.remove("show");
+      errorBox.style.display = "none";
+
+      if (password !== confirm) {
+        errorBox.textContent = "Las contraseñas no coinciden.";
+        errorBox.classList.add("show");
+        errorBox.style.display = "block";
+        return;
+      }
+
+      btn.disabled    = true;
+      btn.textContent = "Creando cuenta...";
+
+      try {
+        const res = await fetch("/api/registro", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ nombre, email, password }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok) {
+          document.getElementById("registroForm").style.display = "none";
+          exitoBox.style.display = "block";
+        } else {
+          errorBox.textContent = data.error || "No se pudo crear la cuenta.";
+          errorBox.classList.add("show");
+          errorBox.style.display = "block";
+          btn.disabled    = false;
+          btn.textContent = "Crear cuenta";
+        }
+      } catch(err) {
+        errorBox.textContent = "No se pudo conectar con el servidor.";
+        errorBox.classList.add("show");
+        errorBox.style.display = "block";
+        btn.disabled    = false;
+        btn.textContent = "Crear cuenta";
+      }
+    });
+  </script>
+  <script src="{{ url_for('static', filename='js/pwa.js') }}"></script>
+</body>
+</html>
