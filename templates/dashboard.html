@@ -114,6 +114,15 @@
     {% endif %}
   </nav>
 
+<script>
+  // Si viene del login, limpia la URL y recarga para que Flask
+  // renderice la sesión correctamente
+  if (window.location.search.includes("login=1")) {
+    history.replaceState({}, "", "/dashboard");
+    location.reload(true);
+  }
+</script>
+  
   <script src="{{ url_for('static', filename='js/app.js') }}"></script>
   <script src="{{ url_for('static', filename='js/pwa.js') }}"></script>
 </body>
