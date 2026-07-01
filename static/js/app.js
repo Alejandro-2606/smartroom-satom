@@ -325,9 +325,8 @@ async function handleLogin(event) {
 
   try {
     const res = await fetchLoginAPI(email, password);
-    if (res.ok) {
-      window.location.href = "/dashboard";
-    } else {
+   if (res.ok) {
+  window.location.replace("/dashboard?login=1"); } else {
       const data = await res.json().catch(() => ({}));
       errorBox.textContent = data.error || "Credenciales incorrectas.";
       errorBox.classList.add("show");
