@@ -6,28 +6,28 @@
   <title>Dashboard · SmartRoom</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
   <link rel="manifest" href="/manifest.json" />
-  <link rel="icon" href="{{ url_for('static', filename='icons/icon-192.png') }}" />
   <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192.png') }}" />
   <meta name="theme-color" content="#111111" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 </head>
 <body data-page="dashboard">
-
-  <div id="installBanner" class="install-banner" style="margin: 12px 16px 0;">
-    <span>Instala SmartRoom en tu celular para acceder más rápido.</span>
-    <button class="install-banner-btn" id="installBtn">Instalar</button>
-  </div>
 
   <nav class="navbar">
     <div class="navbar-logo">Smart<span>Room</span></div>
     <div class="navbar-links">
       <a href="/dashboard" class="navbar-link active">Dashboard</a>
+      {% if session.get('user_id') %}
       <a href="/historial" class="navbar-link">Historial</a>
+      {% endif %}
     </div>
     <div class="navbar-user">
-      <span>{{ usuario_nombre }}</span>
-      <button class="logout-btn" id="logoutBtn">Salir</button>
+      {% if session.get('user_id') %}
+        <span>{{ usuario_nombre }}</span>
+        <button class="logout-btn" id="logoutBtn">Salir</button>
+      {% else %}
+        <a href="/login" class="btn" style="font-size:13px;">Ingresar</a>
+        <a href="/registro" class="btn btn-primary" style="font-size:13px;">Crear cuenta</a>
+      {% endif %}
     </div>
   </nav>
 
@@ -93,6 +93,7 @@
       <span class="bottom-nav-icon">⬚</span>
       <span>Inicio</span>
     </a>
+    {% if session.get('user_id') %}
     <a href="/historial" class="bottom-nav-item">
       <span class="bottom-nav-icon">▤</span>
       <span>Historial</span>
@@ -101,15 +102,19 @@
       <span class="bottom-nav-icon">⏻</span>
       <span>Salir</span>
     </a>
+    {% else %}
+    <a href="/login" class="bottom-nav-item">
+      <span class="bottom-nav-icon">↗</span>
+      <span>Ingresar</span>
+    </a>
+    <a href="/registro" class="bottom-nav-item">
+      <span class="bottom-nav-icon">✚</span>
+      <span>Registro</span>
+    </a>
+    {% endif %}
   </nav>
 
   <script src="{{ url_for('static', filename='js/app.js') }}"></script>
   <script src="{{ url_for('static', filename='js/pwa.js') }}"></script>
-  <script>
-    document.getElementById("bottomLogout").addEventListener("click", (e) => {
-      e.preventDefault();
-      handleLogout();
-    });
-  </script>
 </body>
 </html>
