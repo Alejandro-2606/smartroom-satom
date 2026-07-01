@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>SmartRoom · SATOM</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192.png') }}" />
+  <meta name="theme-color" content="#111111" />
+  <style>
+    .inicio-wrap {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+    }
+    .inicio-logo {
+      font-size: 42px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .inicio-logo span { font-weight: 300; color: var(--text-secondary); }
+    .inicio-tagline {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 48px;
+      max-width: 400px;
+    }
+    .inicio-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      max-width: 320px;
+    }
+    .inicio-btn-primary {
+      padding: 14px;
+      background: var(--text-primary);
+      color: var(--bg-main);
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+      transition: background 0.15s;
+    }
+    .inicio-btn-primary:hover { background: #e5e5e5; }
+    .inicio-btn-secondary {
+      padding: 14px;
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+      transition: border-color 0.15s;
+    }
+    .inicio-btn-secondary:hover { border-color: var(--text-secondary); }
+    .inicio-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-tertiary);
+      font-size: 12px;
+    }
+    .inicio-divider::before,
+    .inicio-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .inicio-stats {
+      display: flex;
+      gap: 32px;
+      margin-bottom: 48px;
+      justify-content: center;
+    }
+    .inicio-stat {
+      text-align: center;
+    }
+    .inicio-stat-num {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .inicio-stat-label {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="inicio-wrap">
+    <div class="inicio-logo">Smart<span>Room</span></div>
+    <p class="inicio-tagline">Sistema Automatizado de Toma de Ocupación y Monitoreo — Universidad Diego Portales</p>
+
+    <div class="inicio-stats">
+      <div class="inicio-stat">
+        <div class="inicio-stat-num" id="statSalas">—</div>
+        <div class="inicio-stat-label">Salas monitoreadas</div>
+      </div>
+      <div class="inicio-stat">
+        <div class="inicio-stat-num" id="statDisp" style="color:var(--green)">—</div>
+        <div class="inicio-stat-label">Disponibles ahora</div>
+      </div>
+      <div class="inicio-stat">
+        <div class="inicio-stat-num" id="statOcup" style="color:var(--amber)">—</div>
+        <div class="inicio-stat-label">Ocupadas</div>
+      </div>
+    </div>
+
+    <div class="inicio-btns">
+      <a href="/dashboard" class="inicio-btn-primary">Ver Dashboard</a>
+      <div class="inicio-divider">o</div>
+      <a href="/login" class="inicio-btn-secondary">Ingresar con cuenta</a>
+      <a href="/registro" class="inicio-btn-secondary">Crear cuenta nueva</a>
+    </div>
+  </div>
+
+  <script>
+    // Carga las stats en tiempo real sin necesitar login
+    const API = "https://smartroom-api-nuhg.onrender.com";
+    async function cargarStats() {
+      try {
+        const res = await fetch(`${API}/api/salas`);
+        const salas = await res.json();
+        const total = salas.length;
+        const disp  = salas.filter(s => s.ocupacion_actual < s.capacidad_maxima * 0.6).length;
+        const ocup  = salas.filter(s => s.ocupacion_actual >= s.capacidad_maxima * 0.6).length;
+        document.getElementById("statSalas").textContent = total;
+        document.getElementById("statDisp").textContent  = disp;
+        document.getElementById("statOcup").textContent  = ocup;
+      } catch(e) {
+        document.getElementById("statSalas").textContent = "—";
+      }
+    }
+    cargarStats();
+  </script>
+  <script src="{{ url_for('static', filename='js/pwa.js') }}"></script>
+</body>
+</html>
