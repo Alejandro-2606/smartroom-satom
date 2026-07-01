@@ -6,7 +6,7 @@
    en vivo para que la ocupación se vea actualizada.
    ============================================ */
 
-const CACHE_NAME = "smartroom-cache-v2";
+const CACHE_NAME = "smartroom-cache-v3";
 
 const ARCHIVOS_ESTATICOS = [
   "/static/css/style.css",
@@ -28,11 +28,7 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(
-        keys
-          .filter((key) => key !== CACHE_NAME)
-          .map((key) => caches.delete(key))
-      )
+      Promise.all(keys.map((key) => caches.delete(key)))
     )
   );
   self.clients.claim();
