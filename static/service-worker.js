@@ -6,7 +6,7 @@
    en vivo para que la ocupación se vea actualizada.
    ============================================ */
 
-const CACHE_NAME = "smartroom-cache-v1";
+const CACHE_NAME = "smartroom-cache-v2";
 
 const ARCHIVOS_ESTATICOS = [
   "/static/css/style.css",
@@ -65,3 +65,4 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
+
